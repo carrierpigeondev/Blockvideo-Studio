@@ -3,11 +3,11 @@ Blockvideo Studio is a CLI program to convert images, directories of images, and
 
 # Example
 https://imgur.com/5yeBVeM from [u/zlakphoto](https://www.reddit.com/user/zlakphoto/)
-![Original Image](examples\5yeBVeM.jpeg)
+![Original Image](examples/5yeBVeM.jpeg)
 
-Using the `examples\cold_palette\` directory for blocks, with a scale factor of 1, we get this output:
+Using the `examples/cold_palette/` directory for blocks, with a scale factor of 1, we get this output:
 
-![Blockimage](examples\5yeBVeM_converted.png)
+![Blockimage](examples/5yeBVeM_converted.png)
 
 
 
