@@ -20,7 +20,7 @@ Using the `examples/25_palette/` directory for blocks, with a scale factor of 6 
 
 ---
 https://i.redd.it/u5p5b3twe3251.jpg from [u/Yoredlol](https://www.reddit.com/user/Yoredlol/)
-![Original Image](examples\u5p5b3twe3251.jpg)
+![Original Image](examples/u5p5b3twe3251.jpg)
 
 Using the `examples/nature_animals` directory for blocks, with a scale factor of 50, the block size is 50 (50x50 resolution images), and we get this output:
 
