@@ -753,7 +753,11 @@ def change_scale_factor():
     return sf
     
 
-if __name__ == "__main__":
+############
+### Main ###
+############
+
+def main():
     try:
         logging.basicConfig(level=logging.INFO)
         
@@ -816,3 +820,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"An exception occurred: {e}")
         traceback.print_exc()
+
+if __name__ == "__main__":
+    main()
