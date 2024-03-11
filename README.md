@@ -34,4 +34,4 @@ Using the `examples/nature_animals` directory for blocks, with a scale factor of
 
 # Setup
 1. Install requirements: `pip install -r requirements.txt`
-2. Run the CLI program: `python .\main`
+2. Run the CLI program: `python .\main.py`
