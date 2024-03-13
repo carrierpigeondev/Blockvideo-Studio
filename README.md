@@ -5,24 +5,19 @@ Blockvideo Studio is a CLI program to convert images, directories of images, and
 https://imgur.com/5yeBVeM from [u/zlakphoto](https://www.reddit.com/user/zlakphoto/)
 ![Original Image](examples/5yeBVeM.jpeg)
 
-Using the `examples/cold_palette/` directory for blocks, with a scale factor of 1, we get this output:
+Block Directory: `examples\nature_animals` (Split up iOS/MacOS Emojis)  
+Block Size: 50 (50x50 images)
+Scale Factor: 50
 
 ![Blockimage](examples/5yeBVeM_converted.png)
-
----
-
-https://i.redd.it/v6i2u32nxu751.jpg from [u/matiorex](https://www.reddit.com/user/Matiorex/)
-![Original Image](examples/v6i2u32nxu751.jpg)
-
-Using the `examples/25_palette/` directory for blocks, with a scale factor of 6 and a modified block size of 6, we get this output:
-
-![Blockimage](examples/v6i2u32nxu751_converted.png)
 
 ---
 https://i.redd.it/u5p5b3twe3251.jpg from [u/Yoredlol](https://www.reddit.com/user/Yoredlol/)
 ![Original Image](examples/u5p5b3twe3251.jpg)
 
-Using the `examples/nature_animals` directory for blocks, with a scale factor of 50, the block size is 50 (50x50 resolution images), and we get this output:
+Blocks directory: `examples/POLA5` (Source: https://lospec.com/palette-list/pola5)  
+Block Size: 4  
+Scale Factor: 4
 
 ![Blockimage](examples/u5p5b3twe3251_converted.png)
 

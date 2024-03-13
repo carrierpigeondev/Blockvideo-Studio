@@ -793,29 +793,34 @@ def main():
             change_scale_factor()
             
         while True:
-            print(f"Block directory is {rf.block_dir}")
-            print(f"Block size is {rf.block_size}")
-            print(f"Scale factor is {sf}")
-        
-            print("""Choose option:
-    1) Convert Single Image
-    2) Convert Directory
-    3) Convert Video
-    4) Remake Reference Loader (Change Block Directory)
-    5) Change Block Size
-    6) Change Scale Factor
-        """)
-            option_input = input(": ").strip()
-            match option_input:
-                case "1": config_convert_image(rf, sf)
-                case "2": config_convert_dir(rf, sf)
-                case "3": config_convert_video(rf, sf)
-                case "4": rf = change_block_dir(rf)
-                case "5": change_block_size(rf)
-                case "6": sf = change_scale_factor(sf)
-                case _: print("Invalid option.")
-                
-            print("Finished.")
+            try:
+                print(f"Block directory is {rf.block_dir}")
+                print(f"Block size is {rf.block_size}")
+                print(f"Scale factor is {sf}")
+            
+                print("""Choose option:
+        1) Convert Single Image
+        2) Convert Directory
+        3) Convert Video
+        4) Remake Reference Loader (Change Block Directory)
+        5) Change Block Size
+        6) Change Scale Factor
+            """)
+                option_input = input(": ").strip()
+                match option_input:
+                    case "1": config_convert_image(rf, sf)
+                    case "2": config_convert_dir(rf, sf)
+                    case "3": config_convert_video(rf, sf)
+                    case "4": rf = change_block_dir(rf)
+                    case "5": change_block_size(rf)
+                    case "6": sf = change_scale_factor()
+                    case _: print("Invalid option.")
+                    
+                print("Finished.")
+
+            except Exception as e:
+                print(f"An exception occurred: {e}")
+                traceback.print_exc()
             
     except Exception as e:
         print(f"An exception occurred: {e}")
