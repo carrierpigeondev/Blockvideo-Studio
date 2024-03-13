@@ -21,6 +21,17 @@ Scale Factor: 4
 
 ![Blockimage](examples/u5p5b3twe3251_converted.png)
 
+---
+
+https://archive.org/details/bliss-600dpi from [Charles O'Rear](https://archive.org/search?query=creator%3A%22Charles+O%27Rear%22)
+![Original Image](examples/bliss-600dpi.png)
+
+Blocks Directory: `examples/Win95` (Source: https://lospec.com/palette-list/windows-95-256-colours)  
+Block Size: 50  
+Scale Factor: 60
+
+![Original Image](examples/bliss-600dpi_converted.png)
+
 # Prerequisites
 1. Python 3.12* and pip
 2. FFmpeg
