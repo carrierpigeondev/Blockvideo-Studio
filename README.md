@@ -5,8 +5,8 @@ Blockvideo Studio is a CLI program to convert images, directories of images, and
 https://imgur.com/5yeBVeM from [u/zlakphoto](https://www.reddit.com/user/zlakphoto/)
 ![Original Image](examples/5yeBVeM.jpeg)
 
-Block Directory: `examples\nature_animals` (Split up iOS/MacOS Emojis)  
-Block Size: 50 (50x50 images)
+Block Directory: `examples/nature_animals` (Split up iOS/MacOS Emojis)  
+Block Size: 50 (50x50 images)  
 Scale Factor: 50
 
 ![Blockimage](examples/5yeBVeM_converted.png)
@@ -22,11 +22,11 @@ Scale Factor: 4
 ![Blockimage](examples/u5p5b3twe3251_converted.png)
 
 # Prerequisites
-1. Python 3.12* and PIP
+1. Python 3.12* and pip
 2. FFmpeg
 
 \* older versions may work, but haven't been tested
 
 # Setup
 1. Install requirements: `pip install -r requirements.txt`
-2. Run the CLI program: `python .\main.py`
+2. Run the CLI program: `python .\main.py` or `py .\main.py`

@@ -799,12 +799,12 @@ def main():
                 print(f"Scale factor is {sf}")
             
                 print("""Choose option:
-        1) Convert Single Image
-        2) Convert Directory
-        3) Convert Video
-        4) Remake Reference Loader (Change Block Directory)
-        5) Change Block Size
-        6) Change Scale Factor
+    1) Convert Single Image
+    2) Convert Directory
+    3) Convert Video
+    4) Remake Reference Loader (Change Block Directory)
+    5) Change Block Size
+    6) Change Scale Factor
             """)
                 option_input = input(": ").strip()
                 match option_input:
