@@ -541,8 +541,8 @@ def config_convert_image(reference_loader, scale_factor):
             show_progress = False
             
         case _:
-            print("Not 'Y' or 'N'. Resorting to No.")
-            show_progress = False
+            print("Not 'Y' or 'N'. Resorting to Yes.")
+            show_progress = True
     
     convert_image(input_path=input_path, output_path=output_path, reference_loader=reference_loader, scale_factor=scale_factor, show_progress=show_progress)
     
