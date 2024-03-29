@@ -1,6 +1,7 @@
 [MESSAGES CONTROL]
 disable=missing-docstring, too-many-locals, too-many-arguments, too-many-branches,
-        too-many-statements, broad-except, global-statement
+        too-many-statements, broad-except, global-statement, logging-fstring-interpolation,
+        invalid-name
 
 [FORMAT]
 string-quote = "
@@ -14,3 +15,6 @@ function-rgx=[a-z_][a-z0-9_]{2,30}$
 argument-rgx=variable-rgx
 attr-rgx=variable-rgx
 method-rgx=function-rgx
+
+[TYPECHECK]
+generated-members=cv2.*,PIL.*,Image.*

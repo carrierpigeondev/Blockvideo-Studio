@@ -5,6 +5,7 @@ import gc
 import threading
 import queue
 import traceback
+import sys
 
 import psutil
 import av
@@ -411,14 +412,6 @@ class ReferenceLoader:
         self.reference_tree = NearestNeighbors(n_neighbors=1, algorithm="auto").fit(self.reference_values)
 
 
-######################
-### Misc Functions ###
-######################
-
-def plot_times(*args):
-    pass
-
-
 ############################
 ### Processing Functions ###
 ############################
@@ -558,8 +551,6 @@ def convert_video(video_path, output_path, reference_loader, scale_factor, frame
         for point in data:
             print(f"{point}= {data[point]}")  # print, not logging.info for formatting purposes
 
-        plot_times(frame_processing_times)
-
     else:
         with open(f"{output_path}_benchmark.txt", "w") as f:
             for point in data:
@@ -579,7 +570,7 @@ def config_convert_image(reference_loader, scale_factor):
     input_path = input("Image input path: ").strip()
     if not os.path.exists(input_path):
         logging.error(f"Path '{input_path}' does not exist. Make sure you typed in the proper location.")
-        exit()
+        sys.exit()
 
     output_path = input("Image output path: ").strip()
 
@@ -622,7 +613,7 @@ def config_convert_dir(reference_loader, scale_factor):
     input_path = input("Directory input path: ").strip()
     if not os.path.exists(input_path):
         logging.error(f"Path '{input_path}' does not exist. Make sure you typed in the proper location.")
-        exit()
+        sys.exit()
 
     output_path = input("Directory output path: ").strip()
     logging.info(f"Absolute path of {output_path} is {os.path.abspath(output_path)}")
@@ -683,28 +674,28 @@ def config_convert_dir(reference_loader, scale_factor):
             decrease_mem_threshold = int(decrease_mem_threshold_input)
         except ValueError:
             logging.error(f"Memory percentage left to throttle {decrease_mem_threshold_input} is not an integer.")
-            exit()
+            sys.exit()
 
         increase_mem_threshold_input = input("Memory percentage used to increase (Default- 30): ")
         try:
             increase_mem_threshold = int(increase_mem_threshold_input)
         except ValueError:
             logging.error(f"Memory percentage used to increase {increase_mem_threshold_input} is not an integer.")
-            exit()
+            sys.exit()
 
         start_batch_size_input = input("Start batch size (Default- 5): ")
         try:
             start_batch_size = int(start_batch_size_input)
         except ValueError:
             logging.error(f"Start batch size {start_batch_size_input} is not an integer.")
-            exit()
+            sys.exit()
 
         start_adjustment_factor_input = input("Start adjustment factor (Default- 0.75): ")
         try:
             start_adjustment_factor = float(start_adjustment_factor_input)
         except ValueError:
             logging.error(f"Start adjustment factor {start_adjustment_factor_input} is not a float.")
-            exit()
+            sys.exit()
 
         dynamic_convert_dir(images_dir_path=os.path.abspath(input_path), output_dir_path=os.path.abspath(output_path), reference_loader=reference_loader, scale_factor=scale_factor, show_progress_per_frame=show_progress_per_frame,
                             decrease_mem_threshold=decrease_mem_threshold, increase_mem_threshold=increase_mem_threshold, start_batch_size=start_batch_size, start_adjustment_factor=start_adjustment_factor, cores=CORES)
@@ -713,7 +704,7 @@ def config_convert_video(reference_loader, scale_factor):
     input_path = input("Video input path: ").strip()
     if not os.path.exists(input_path):
         logging.error(f"Path '{input_path}' does not exist. Make sure you typed in the proper location.")
-        exit()
+        sys.exit()
 
     output_path = input("Video output path: ").strip()
 
@@ -756,28 +747,28 @@ def config_convert_video(reference_loader, scale_factor):
         decrease_mem_threshold = int(decrease_mem_threshold_input)
     except ValueError:
         logging.error(f"Memory percentage left to throttle {decrease_mem_threshold_input} is not an integer.")
-        exit()
+        sys.exit()
 
     increase_mem_threshold_input = input("Memory percentage used to increase (Default- 30): ")
     try:
         increase_mem_threshold = int(increase_mem_threshold_input)
     except ValueError:
         logging.error(f"Memory percentage used to increase {increase_mem_threshold_input} is not an integer.")
-        exit()
+        sys.exit()
 
     start_batch_size_input = input("Start batch size (Default- 5): ")
     try:
         start_batch_size = int(start_batch_size_input)
     except ValueError:
         logging.error(f"Start batch size {start_batch_size_input} is not an integer.")
-        exit()
+        sys.exit()
 
     start_adjustment_factor_input = input("Start adjustment factor (Default- 0.75): ")
     try:
         start_adjustment_factor = float(start_adjustment_factor_input)
     except ValueError:
         logging.error(f"Start adjustment factor {start_adjustment_factor_input} is not a float.")
-        exit()
+        sys.exit()
 
     convert_video(video_path=os.path.abspath(input_path), output_path=os.path.abspath(output_path), reference_loader=reference_loader, scale_factor=scale_factor, frames_dir=os.path.abspath(frames_directory),
                   decrease_mem_threshold=decrease_mem_threshold, increase_mem_threshold=increase_mem_threshold, start_batch_size=start_batch_size, start_adjustment_factor=start_adjustment_factor)
@@ -787,7 +778,7 @@ def change_block_dir(reference_loader: ReferenceLoader):
 
     if not os.path.exists(block_dir):
         logging.error(f"Path '{block_dir}' does not exist. Make sure you typed in the proper location.")
-        exit()
+        sys.exit()
 
     allow_transparency_input = input("Allow transparency (Y/N): ").strip()
     match allow_transparency_input.upper():
@@ -810,7 +801,7 @@ def change_block_size(reference_loader: ReferenceLoader):
 
     except ValueError:
         logging.error(f"Start batch size {block_size_input} is not an integer.")
-        exit()
+        sys.exit()
 
     reference_loader.block_size = block_size
 
@@ -841,7 +832,7 @@ def main():
 
         if not os.path.exists(block_dir):
             logging.error(f"Path '{block_dir}' does not exist. Make sure you typed in the proper location.")
-            exit()
+            sys.exit()
 
         allow_transparency_input = input("Allow transparency (Y/N): ").strip()
         match allow_transparency_input.upper():
