@@ -2,7 +2,7 @@
 disable=missing-docstring, too-many-locals, too-many-arguments, too-many-branches,
         too-many-statements, broad-except, global-statement, logging-fstring-interpolation,
         invalid-name, global-at-module-level, global-variable-undefined,
-        too-many-instance-attributes
+        too-many-instance-attributes, unnecessary-pass, global-variable-not-assigned
 
 [FORMAT]
 max-line-length = 285

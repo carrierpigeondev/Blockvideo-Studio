@@ -549,13 +549,13 @@ def convert_video(video_path, output_path, reference_loader, scale_factor, frame
     }
 
     if not benchmark:
-        for point in data:
-            print(f"{point}= {data[point]}")  # print, not logging.info for formatting purposes
+        for key, point in data.items():
+            print(f"{key}= {point}")  # print, not logging.info for formatting purposes
 
     else:
         with open(f"{output_path}_benchmark.txt", "w", encoding="utf-8") as f:
-            for point in data:
-                f.write(f"{point}= {data[point]}\n")
+            for key, point in data.items():
+                f.write(f"{key}= {point}\n")
 
     return data
 
@@ -877,8 +877,8 @@ def main():
                     case "1": config_convert_image(rf, sf)
                     case "2": config_convert_dir(rf, sf)
                     case "3": config_convert_video(rf, sf)
-                    case "4": rf = change_block_dir(rf)
-                    case "5": change_block_size()
+                    case "4": rf = change_block_dir()
+                    case "5": change_block_size(rf)
                     case "6": sf = change_scale_factor()
                     case _: print("Invalid option.")
 
