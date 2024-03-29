@@ -878,7 +878,7 @@ def main():
                     case "2": config_convert_dir(rf, sf)
                     case "3": config_convert_video(rf, sf)
                     case "4": rf = change_block_dir(rf)
-                    case "5": change_block_size(rf)
+                    case "5": change_block_size()
                     case "6": sf = change_scale_factor()
                     case _: print("Invalid option.")
 
