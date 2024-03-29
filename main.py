@@ -30,7 +30,7 @@ def set_globals():
     global CORES
     global CODEC
     try:
-        with open("global_cfg.yaml", "r") as f:
+        with open("global_cfg.yaml", "r", encoding="utf-8") as f:
             global_config = yaml.safe_load(f)
 
             CORES = global_config["cores"]
@@ -66,7 +66,7 @@ def save_video(frames_dir, fps, audio_path, output_path, codec):
 
     first_image_path = os.path.join(frames_dir, image_filenames[0])
     frame = cv2.imread(first_image_path)
-    height, width, layers = frame.shape
+    height, width, _ = frame.shape
     size = (width, height)
 
     logging.info("Initializing video writer.")
@@ -388,7 +388,8 @@ class ReferenceLoader:
         for block_file, block in self.loaded_blocks.items():
             if not self.allow_transparency:
                 alpha_channel = block.split()[-1]
-                if alpha_channel.getextrema()[0] < 255: continue
+                if alpha_channel.getextrema()[0] < 255:
+                    continue
 
             typeless_file_name = block_file[:-4]
 
@@ -552,7 +553,7 @@ def convert_video(video_path, output_path, reference_loader, scale_factor, frame
             print(f"{point}= {data[point]}")  # print, not logging.info for formatting purposes
 
     else:
-        with open(f"{output_path}_benchmark.txt", "w") as f:
+        with open(f"{output_path}_benchmark.txt", "w", encoding="utf-8") as f:
             for point in data:
                 f.write(f"{point}= {data[point]}\n")
 
@@ -773,7 +774,7 @@ def config_convert_video(reference_loader, scale_factor):
     convert_video(video_path=os.path.abspath(input_path), output_path=os.path.abspath(output_path), reference_loader=reference_loader, scale_factor=scale_factor, frames_dir=os.path.abspath(frames_directory),
                   decrease_mem_threshold=decrease_mem_threshold, increase_mem_threshold=increase_mem_threshold, start_batch_size=start_batch_size, start_adjustment_factor=start_adjustment_factor)
 
-def change_block_dir(reference_loader: ReferenceLoader):
+def change_block_dir():
     block_dir = input("Reference loader block directory: ").strip()
 
     if not os.path.exists(block_dir):
