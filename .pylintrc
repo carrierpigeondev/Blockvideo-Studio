@@ -1,0 +1,16 @@
+[MESSAGES CONTROL]
+disable=missing-docstring, too-many-locals, too-many-arguments, too-many-branches,
+        too-many-statements, broad-except, global-statement
+
+[FORMAT]
+string-quote = "
+
+max-line-length = 120
+max-doc-length = 120
+
+[BASIC]
+variable-rgx=[a-z_][a-z0-9_]{0,30}$
+function-rgx=[a-z_][a-z0-9_]{2,30}$
+argument-rgx=variable-rgx
+attr-rgx=variable-rgx
+method-rgx=function-rgx

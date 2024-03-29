@@ -31,10 +31,10 @@ def set_globals():
     try:
         with open("global_cfg.yaml", "r") as f:
             global_config = yaml.safe_load(f)
-            
+
             CORES = global_config["cores"]
             CODEC = global_config["codec"]
-            
+
     except Exception as e:
         print(f"An exception occurred while reading global_config.yaml: {e}")
         traceback.print_exc()
@@ -807,9 +807,11 @@ def change_block_size(reference_loader: ReferenceLoader):
     block_size_input = input("New block size: ")
     try:
         block_size = int(block_size_input)
+        
     except ValueError:
-            logging.error(f"Start batch size {block_size_input} is not an integer.")
-            exit()
+        logging.error(f"Start batch size {block_size_input} is not an integer.")
+        exit()
+        
     reference_loader.block_size = block_size
     
 def change_scale_factor():
