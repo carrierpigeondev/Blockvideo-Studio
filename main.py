@@ -45,6 +45,7 @@ def set_globals():
         print("Setting default CODEC to mp4v")
         CODEC = "mp4v"
 
+
 ###################
 ### Compilation ###
 ###################
