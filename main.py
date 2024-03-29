@@ -46,7 +46,16 @@ except Exception as e:
 ### Compilation ###
 ###################
 
-def save_video(frames_dir, fps, audio_path, output_path):
+def save_video(frames_dir, fps, audio_path, output_path, codec):
+    """Saves a video from given parameters.
+
+    Args:
+        frames_dir (string): The directory where the frames of the video to be saved are contained.
+        fps (float): frames per second
+        audio_path (string OR None): The path to the audio file for the video audio. If set to None audio will not be added. FFmpeg is required for this to work. Otherwise, a recoverable exception will occur.
+        output_path (string): The path where the video will be saved.
+        codec (string): fourcc codec used by the cv2 video writer.
+    """
     logging.info("Sorting file names.")
     image_filenames = sorted([file for file in os.listdir(frames_dir) if file.endswith(".png")], key=lambda x: int(os.path.splitext(x)[0]))
     
@@ -56,7 +65,7 @@ def save_video(frames_dir, fps, audio_path, output_path):
     size = (width, height)
 
     logging.info("Initializing video writer.")
-    fourcc = cv2.VideoWriter_fourcc(*CODEC)
+    fourcc = cv2.VideoWriter_fourcc(*codec)
     video_output_path = output_path if not audio_path else output_path.replace(".mp4", "_noaudio.mp4")
     out = cv2.VideoWriter(video_output_path, fourcc, fps, size)
 
@@ -110,11 +119,27 @@ def save_video(frames_dir, fps, audio_path, output_path):
 ################
 
 def get_fps(video_path):
+    """Returns a video's fps. Uses VideoFileClip(path).fps
+
+    Args:
+        video_path (string): Path to get fps.
+
+    Returns:
+        float: FPS of the video.
+    """
     return VideoFileClip(video_path).fps
     
 def get_audio(video_path):
+    """Returns a video's audio.
+
+    Args:
+        video_path (string): Path to get audio.
+
+    Returns:
+        string OR None: Returns a string if there is a audio, otherwise, an exception will occur and return None.
+    """
     try:
-        audio_output_path = os.path.splitext(video_path)[0] + "_audio.mp3"
+        audio_output_path = os.path.splitext(video_path)[0]
         
         video_clip = VideoFileClip(video_path)
         audio_clip = video_clip.audio
@@ -135,6 +160,14 @@ def get_audio(video_path):
 ##################
 
 def video_to_frames(video_path, frames_dir, every=1, scale_factor=1):
+    """Outputs every x frames as a .png from a video into a frames directory.
+
+    Args:
+        video_path (string): Path to extract frames.
+        frames_dir (string): Path to output frames.
+        every (int, optional): Every x frame. Defaults to 1.
+        scale_factor (int, optional): Scales the frame down by this factor (floor divides dimensions/resolution). Defaults to 1.
+    """
     overwrite = False
     start = 0
     end = None
@@ -402,7 +435,7 @@ def convert_dir(images_dir_path, output_dir_path, reference_loader, scale_factor
         for image_path in tqdm.tqdm(os.listdir(images_dir_path)):
             BlockImageGenerator(input_path=os.path.join(images_dir_path, image_path), output_path=os.path.join(output_dir_path, image_path), reference_loader=reference_loader, scale_factor=scale_factor, show_progress=show_progress_per_frame)
 
-def dynamic_convert_dir(images_dir_path, output_dir_path, reference_loader, scale_factor=1, show_progress_per_frame=False, decrease_mem_threshold=20, increase_mem_threshold=30, start_batch_size=5, start_adjustment_factor=0.75):
+def dynamic_convert_dir(images_dir_path, output_dir_path, reference_loader, scale_factor=1, show_progress_per_frame=False, decrease_mem_threshold=20, increase_mem_threshold=30, start_batch_size=5, start_adjustment_factor=0.75, cores=CORES):
     def process_frame(frame_file):
         start_time = time.perf_counter()
         convert_image(input_path=os.path.join(images_dir_path, frame_file), output_path=os.path.join(output_dir_path, frame_file), reference_loader=reference_loader, scale_factor=scale_factor, show_progress=show_progress_per_frame)
@@ -437,7 +470,7 @@ def dynamic_convert_dir(images_dir_path, output_dir_path, reference_loader, scal
         current_batch_files = image_files[processed_images:batch_end]
         
         logging.info("Working.")
-        batch_processing_times = Parallel(n_jobs=CORES)(delayed(process_frame)(image_file) for image_file in tqdm.tqdm(current_batch_files))
+        batch_processing_times = Parallel(n_jobs=cores)(delayed(process_frame)(image_file) for image_file in tqdm.tqdm(current_batch_files))
         
         logging.info("Extending frame processing times")
         frame_processing_times.extend(batch_processing_times)
@@ -469,7 +502,7 @@ def convert_video(video_path, output_path, reference_loader, scale_factor, frame
     fp_end_time = time.perf_counter()
     
     sv_start_time = time.perf_counter()
-    save_video(frames_dir, get_fps(video_path), get_audio(video_path), output_path)
+    save_video(frames_dir, get_fps(video_path), get_audio(video_path + "_audio.mp3"), output_path, CODEC)
     sv_end_time = time.perf_counter()
     
     clean_start_time = time.perf_counter()
@@ -477,6 +510,7 @@ def convert_video(video_path, output_path, reference_loader, scale_factor, frame
         for frame_path in os.listdir(frames_dir):
             os.remove(os.path.join(frames_dir, frame_path))
         os.removedirs(frames_dir)
+        os.remove(video_path + "_audio.mp3")
     clean_end_time = time.perf_counter()
     
     end_time = time.perf_counter()
