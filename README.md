@@ -43,7 +43,11 @@ Scale Factor: 60
 1. Install requirements: `pip install -r requirements.txt`
 2. Run the CLI program: `python .\main.py` or `py .\main.py`
 
-\* Note: all configuration is done in the CLI's prompts.
+# Notes
+* Most configuration is done in the CLI's prompts.  
+* Change global_config.yaml to adjust CPU cores (defaults to all cores) and video output fourcc codec  
+* This program can create MASSIVE files and directories if the input files and blocks are already large.  
+* This program will use a lot of CPU and RAM usage if multi-core is chosen. Batch-loading-processing is implemented to mitigate OOM errors, but large memory usages can occur. Adjust configuration settings in the CLI for more control. **Defaults are based off 32GB of RAM and a 13900k (32-thread processor)**.  
 
 # ChatGPT Generated Documentation
 I write garbage, barely functional code, not books. So, I had ChatGPT generate ~~95% of the code~~ 100% of the following documentation for me.  
