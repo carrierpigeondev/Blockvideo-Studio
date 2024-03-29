@@ -16,14 +16,38 @@ from PIL import Image, ImageStat
 from sklearn.neighbors import NearestNeighbors
 import tqdm
 import ffmpeg
+import yaml
 
+###############
+### Globals ###
+###############
+
+global CORES
+global CODEC
+
+try:
+    with open("global_cfg.yaml", "r") as f:
+        global_config = yaml.safe_load(f)
+        
+        CORES = global_config["cores"]
+        CODEC = global_config["codec"]
+        
+except Exception as e:
+    print(f"An exception occurred while reading global_config.yaml: {e}")
+    traceback.print_exc()
+    
+    print("Setting default CORES to -1")
+    CORES = -1
+    
+    print("Setting default CODEC to mp4v")
+    CODEC = "mp4v"
 
 ###################
 ### Compilation ###
 ###################
 
 def save_video(frames_dir, fps, audio_path, output_path):
-    print("Sorting file names.")
+    logging.info("Sorting file names.")
     image_filenames = sorted([file for file in os.listdir(frames_dir) if file.endswith(".png")], key=lambda x: int(os.path.splitext(x)[0]))
     
     first_image_path = os.path.join(frames_dir, image_filenames[0])
@@ -31,12 +55,11 @@ def save_video(frames_dir, fps, audio_path, output_path):
     height, width, layers = frame.shape
     size = (width, height)
 
-    print("Initializing video writer.")
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    logging.info("Initializing video writer.")
+    fourcc = cv2.VideoWriter_fourcc(*CODEC)
     video_output_path = output_path if not audio_path else output_path.replace(".mp4", "_noaudio.mp4")
     out = cv2.VideoWriter(video_output_path, fourcc, fps, size)
 
-    print("Writing frames.")    
     def write_frames(out, frames_queue):
         while True:
             frame = frames_queue.get()
@@ -49,7 +72,7 @@ def save_video(frames_dir, fps, audio_path, output_path):
     writer_thread = threading.Thread(target=write_frames, args=(out, frames_queue))
     writer_thread.start()
 
-    print("Writing frames.")
+    logging.info("Writing frames.")
     for filename in tqdm.tqdm(image_filenames):
         frame_path = os.path.join(frames_dir, filename)
         frame = cv2.imread(frame_path)
@@ -60,20 +83,26 @@ def save_video(frames_dir, fps, audio_path, output_path):
     writer_thread.join()
     out.release()
 
-    if audio_path:
-        print("Adding audio using ffmpeg-python.")
-        (
-            ffmpeg
-            .input(video_output_path)
-            .output(ffmpeg.input(audio_path), output_path, vcodec='copy', acodec='aac', strict='experimental')
-            .overwrite_output()
-            .run()
-        )
+    # will fail if ffmpeg is not installed
+    try:
+        if audio_path:
+            logging.info("Adding audio using ffmpeg-python.")
+            (
+                ffmpeg
+                .input(video_output_path)
+                .output(ffmpeg.input(audio_path), output_path, vcodec='copy', acodec='aac', strict='experimental')
+                .overwrite_output()
+                .run()
+            )
 
-        if video_output_path != output_path:
-            os.remove(video_output_path)
+            if video_output_path != output_path:
+                os.remove(video_output_path)
+                
+    except Exception as e:
+        print(f"An exception occurred while adding audio: {e}")
+        traceback.print_exc()
 
-    print("Done.")
+    logging.info("Done.")
 
 
 ################
@@ -298,11 +327,11 @@ class ReferenceLoader:
             with Image.open(path_to_block_file) as img:
                 sizes.add(img.size)  # img.size is a tuple (width, height)
 
-        print(len(sizes))
-        print(sizes)
+        logging.info(len(sizes))
+        logging.info(sizes)
         
         if len(sizes) > 1:
-            print("Not all block files are the same size. Resorting to smallest value.")
+            logging.info("Not all block files are the same size. Resorting to smallest value.")
             self.block_size = min(sizes)[0]
         elif len(sizes) == 1:
             self.block_size = next(iter(sizes))[0]
@@ -408,7 +437,7 @@ def dynamic_convert_dir(images_dir_path, output_dir_path, reference_loader, scal
         current_batch_files = image_files[processed_images:batch_end]
         
         logging.info("Working.")
-        batch_processing_times = Parallel(n_jobs=-1)(delayed(process_frame)(image_file) for image_file in tqdm.tqdm(current_batch_files))
+        batch_processing_times = Parallel(n_jobs=CORES)(delayed(process_frame)(image_file) for image_file in tqdm.tqdm(current_batch_files))
         
         logging.info("Extending frame processing times")
         frame_processing_times.extend(batch_processing_times)
@@ -486,7 +515,7 @@ def convert_video(video_path, output_path, reference_loader, scale_factor, frame
     
     if not benchmark:
         for point in data:
-            print(f"{point}= {data[point]}")
+            print(f"{point}= {data[point]}")  # print, not logging.info for formatting purposes
         
         plot_times(frame_processing_times)
         
@@ -603,7 +632,7 @@ def config_convert_dir(reference_loader, scale_factor):
         convert_dir(images_dir_path=os.path.abspath(input_path), output_dir_path=os.path.abspath(output_path), reference_loader=reference_loader, scale_factor=scale_factor, show_progress_per_frame=show_progress_per_frame, show_progress=show_progress)
         
     else:
-        print("Dynamic directory conversion automatically uses all CPU cores it can (via joblib) to run faster.")
+        print("Dynamic directory conversion automatically uses multiple CPU cores it can (via joblib) to run faster.")
         print("It also has four configuration options in order to optimize memory usage when working with large amounts of images at the same time. (Batch processing)")
         
         decrease_mem_threshold_input = input("Memory percentage left to throttle (Default- 20): ")
@@ -819,7 +848,7 @@ def main():
                 print("Finished.")
 
             except Exception as e:
-                print(f"An exception occurred: {e}")
+                print(f"An exception occurred in the loop: {e}")
                 traceback.print_exc()
             
     except Exception as e:

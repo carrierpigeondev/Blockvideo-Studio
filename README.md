@@ -34,7 +34,8 @@ Scale Factor: 60
 
 # Prerequisites
 1. Python 3.12* and pip
-2. FFmpeg
+2. FFmpeg (for adding audio, will throw recoverable exception if not installed)
+3. Video viewer with mp4v (MPEG-4 Video) support is required to view the video
 
 \* older versions may work, but haven't been tested
 

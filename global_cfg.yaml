@@ -1,0 +1,5 @@
+# keep at -1 for all cores
+cores: -1
+
+# fourcc codec code, make sure it is compatible with your chosen video file path
+codec: mp4v
