@@ -25,22 +25,25 @@ import yaml
 global CORES
 global CODEC
 
-try:
-    with open("global_cfg.yaml", "r") as f:
-        global_config = yaml.safe_load(f)
+def set_globals():
+    global CORES
+    global CODEC
+    try:
+        with open("global_cfg.yaml", "r") as f:
+            global_config = yaml.safe_load(f)
+            
+            CORES = global_config["cores"]
+            CODEC = global_config["codec"]
+            
+    except Exception as e:
+        print(f"An exception occurred while reading global_config.yaml: {e}")
+        traceback.print_exc()
         
-        CORES = global_config["cores"]
-        CODEC = global_config["codec"]
+        print("Setting default CORES to -1")
+        CORES = -1
         
-except Exception as e:
-    print(f"An exception occurred while reading global_config.yaml: {e}")
-    traceback.print_exc()
-    
-    print("Setting default CORES to -1")
-    CORES = -1
-    
-    print("Setting default CODEC to mp4v")
-    CODEC = "mp4v"
+        print("Setting default CODEC to mp4v")
+        CODEC = "mp4v"
 
 ###################
 ### Compilation ###
@@ -435,7 +438,7 @@ def convert_dir(images_dir_path, output_dir_path, reference_loader, scale_factor
         for image_path in tqdm.tqdm(os.listdir(images_dir_path)):
             BlockImageGenerator(input_path=os.path.join(images_dir_path, image_path), output_path=os.path.join(output_dir_path, image_path), reference_loader=reference_loader, scale_factor=scale_factor, show_progress=show_progress_per_frame)
 
-def dynamic_convert_dir(images_dir_path, output_dir_path, reference_loader, scale_factor=1, show_progress_per_frame=False, decrease_mem_threshold=20, increase_mem_threshold=30, start_batch_size=5, start_adjustment_factor=0.75, cores=CORES):
+def dynamic_convert_dir(images_dir_path, output_dir_path, reference_loader, scale_factor=1, show_progress_per_frame=False, decrease_mem_threshold=20, increase_mem_threshold=30, start_batch_size=5, start_adjustment_factor=0.75, cores=-1):
     def process_frame(frame_file):
         start_time = time.perf_counter()
         convert_image(input_path=os.path.join(images_dir_path, frame_file), output_path=os.path.join(output_dir_path, frame_file), reference_loader=reference_loader, scale_factor=scale_factor, show_progress=show_progress_per_frame)
@@ -489,6 +492,9 @@ def dynamic_convert_dir(images_dir_path, output_dir_path, reference_loader, scal
     return frame_processing_times
 
 def convert_video(video_path, output_path, reference_loader, scale_factor, frames_dir="frames_dir", clean_up=True, benchmark=False, decrease_mem_threshold=20, increase_mem_threshold=30, start_batch_size=5, start_adjustment_factor=0.75):
+    global CORES
+    global CODEC
+    
     start_time = time.perf_counter()
     
     vtf_start_time = time.perf_counter()
@@ -498,7 +504,7 @@ def convert_video(video_path, output_path, reference_loader, scale_factor, frame
     fp_start_time = time.perf_counter()
     frame_processing_times = dynamic_convert_dir(images_dir_path=frames_dir, output_dir_path=frames_dir, reference_loader=reference_loader, show_progress_per_frame=False,
                                                  decrease_mem_threshold=decrease_mem_threshold, increase_mem_threshold=increase_mem_threshold, start_batch_size=start_batch_size,
-                                                 start_adjustment_factor=start_adjustment_factor)
+                                                 start_adjustment_factor=start_adjustment_factor, cores=CORES)
     fp_end_time = time.perf_counter()
     
     sv_start_time = time.perf_counter()
@@ -610,6 +616,8 @@ def config_convert_image(reference_loader, scale_factor):
     convert_image(input_path=input_path, output_path=output_path, reference_loader=reference_loader, scale_factor=scale_factor, show_progress=show_progress)
     
 def config_convert_dir(reference_loader, scale_factor):
+    global CORES
+    
     input_path = input("Directory input path: ").strip()
     if not os.path.exists(input_path):
         logging.error(f"Path '{input_path}' does not exist. Make sure you typed in the proper location.")
@@ -698,7 +706,7 @@ def config_convert_dir(reference_loader, scale_factor):
             exit()
         
         dynamic_convert_dir(images_dir_path=os.path.abspath(input_path), output_dir_path=os.path.abspath(output_path), reference_loader=reference_loader, scale_factor=scale_factor, show_progress_per_frame=show_progress_per_frame,
-                            decrease_mem_threshold=decrease_mem_threshold, increase_mem_threshold=increase_mem_threshold, start_batch_size=start_batch_size, start_adjustment_factor=start_adjustment_factor)
+                            decrease_mem_threshold=decrease_mem_threshold, increase_mem_threshold=increase_mem_threshold, start_batch_size=start_batch_size, start_adjustment_factor=start_adjustment_factor, cores=CORES)
     
 def config_convert_video(reference_loader, scale_factor):
     input_path = input("Video input path: ").strip()
