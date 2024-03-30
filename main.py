@@ -144,7 +144,7 @@ def get_audio(video_path):
         string OR None: Returns a string if there is a audio, otherwise, an exception will occur and return None.
     """
     try:
-        audio_output_path = os.path.splitext(video_path)[0]
+        audio_output_path = os.path.splitext(video_path)[0] + "_audio.mp3"
 
         video_clip = VideoFileClip(video_path)
         audio_clip = video_clip.audio
@@ -503,7 +503,7 @@ def convert_video(video_path, output_path, reference_loader, scale_factor, frame
     fp_end_time = time.perf_counter()
 
     sv_start_time = time.perf_counter()
-    save_video(frames_dir, get_fps(video_path), get_audio(video_path + "_audio.mp3"), output_path, CODEC)
+    save_video(frames_dir, get_fps(video_path), get_audio(video_path), output_path, CODEC)
     sv_end_time = time.perf_counter()
 
     clean_start_time = time.perf_counter()
@@ -511,7 +511,7 @@ def convert_video(video_path, output_path, reference_loader, scale_factor, frame
         for frame_path in os.listdir(frames_dir):
             os.remove(os.path.join(frames_dir, frame_path))
         os.removedirs(frames_dir)
-        os.remove(video_path + "_audio.mp3")
+        os.remove(os.path.splitext(video_path)[0] + "_audio.mp3")
     clean_end_time = time.perf_counter()
 
     end_time = time.perf_counter()
@@ -735,8 +735,8 @@ def config_convert_video(reference_loader, scale_factor):
         frames_directory = "frames_dir"
 
     logging.info(f"Absolute path of {frames_directory} is {os.path.abspath(frames_directory)}")
-    if os.path.exists(os.path.abspath(output_path)) and os.listdir(os.path.abspath(output_path)):
-        logging.warning(f"Path '{os.path.abspath(output_path)}' has content in it. Continuing will add to the directory. All content in this directory will be deleted at the end of execution.")
+    if os.path.exists(os.path.abspath(frames_directory)) and os.listdir(os.path.abspath(frames_directory)):
+        logging.warning(f"Path '{os.path.abspath(frames_directory)}' has content in it. Continuing will add to the directory. All content in this directory will be deleted at the end of execution.")
         input("Press enter to continue, or cancel execution.")
 
     print("Video conversion automatically uses dynamic directory conversion.")
